@@ -1,0 +1,112 @@
+ALGORITHM:
+SERVER SIDE
+
+Create TCP socket using socket(AF_INET, SOCK_STREAM, 0).
+
+Bind it to a port (e.g., 8080) using bind().
+
+Listen for incoming connections using listen().
+
+Accept new client connections using accept() and store their sockets.
+
+Create UDP socket using socket(AF_INET, SOCK_DGRAM, 0) and bind to a UDP port (e.g., 9090).
+
+Use select() to monitor all sockets (TCP, UDP, and connected clients).
+
+If there’s data:
+
+From UDP → receive using recvfrom() and broadcast to all TCP clients.
+
+From TCP → receive using recv() and broadcast to all clients.
+
+If a TCP client disconnects, close its socket.
+
+Repeat the loop to handle all communications.
+
+CLIENT SIDE
+
+Create TCP socket and connect to the server using connect().
+
+Create UDP socket for sending messages to the server.
+
+Use select() to monitor keyboard (stdin) and server messages.
+
+If user types:
+
+A message starting with "u:" → send via UDP using sendto().
+
+Any other message → send via TCP using send().
+
+If server sends a TCP message → display it.
+
+Repeat until disconnected.
+
+PROGRAM EXECUTION STEPS:
+
+Save the code as chat.c.
+
+Compile the program:
+
+gcc chat.c -o chat
+
+
+Start the server in one terminal:
+
+./chat server
+
+
+Output:
+
+Server running (TCP:8080 UDP:9090)
+
+
+Start one or more clients in new terminals:
+
+./chat client
+
+
+Output:
+
+Connected! Use 'u:<msg>' for UDP, otherwise TCP
+
+
+Send messages:
+
+Example:
+
+Hello everyone   → Sent via TCP
+u:Hi via UDP     → Sent via UDP
+
+
+Observe the output:
+
+Server shows received messages.
+
+All connected clients receive the broadcasted messages.
+
+To stop:
+
+Press Ctrl + C in each terminal.
+
+OUTPUT:
+
+Server Terminal:
+
+Server running (TCP:8080 UDP:9090)
+New TCP client connected
+TCP: Hello everyone
+UDP: Hi via UDP
+
+
+Client 1 Terminal:
+
+Connected! Use 'u:<msg>' for UDP, otherwise TCP
+Hello everyone
+Server: Hi via UDP
+
+
+Client 2 Terminal:
+
+Connected! Use 'u:<msg>' for UDP, otherwise TCP
+Server: Hello everyone
+Server: Hi via UDP
